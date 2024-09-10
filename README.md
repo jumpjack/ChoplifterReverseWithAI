@@ -1,4 +1,18 @@
-# Choplifter Reverse-Engineer
+# AI analysis
+
+I will try to analyse through AI tools this reverse-engineered code, to make it visual.
+
+I found that ChatGPT and other can easily analyse short pieces of the code and turn them into call tree in mermaid format, but they can't read the whole code, so I asked them to write a web page which gives same results, but currently I am still getting confused results: hundreds and hundreds of calls make the graph unreadable; I need to find an automated method to group routines ny tasks or something else.
+
+Example of partial result (a .mermaid file viewed in  [https://app.diagrams.net](https://app.diagrams.net) ):
+
+![image](https://github.com/user-attachments/assets/03b81a3d-b1c8-46d3-ad32-aedd54211eef)
+
+----------
+
+# Original readme.md
+
+## Choplifter Reverse-Engineer
 
 This is a full reverse engineer of the Apple II game Choplifter, written by Dan Gorlin in 1982. It was done clean-room style beginning only with the binary. I had no additional information about this game other than the disk image.
 
