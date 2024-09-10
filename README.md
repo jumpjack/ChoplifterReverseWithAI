@@ -8,6 +8,10 @@ Example of partial result (a .mermaid file viewed in  [https://app.diagrams.net]
 
 ![image](https://github.com/user-attachments/assets/03b81a3d-b1c8-46d3-ad32-aedd54211eef)
 
+
+Opinions/help/suggestions welcome in [discussions](https://github.com/jumpjack/ChoplifterReverseWithAI/discussions) section!
+
+
 ----------
 
 # Original readme.md
