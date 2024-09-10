@@ -1,3 +1,7 @@
+![image](https://github.com/user-attachments/assets/c4b2d949-eb82-44a5-9bb7-de5750280b3f)
+
+
+
 # AI analysis
 
 I will try to analyse through AI tools this reverse-engineered code, to make it visual.
