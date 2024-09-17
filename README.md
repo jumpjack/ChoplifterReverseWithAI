@@ -17,6 +17,9 @@ Example of partial result (a .mermaid file viewed in  [https://app.diagrams.net]
 Opinions/help/suggestions welcome in [discussions](https://github.com/jumpjack/ChoplifterReverseWithAI/discussions) section!
 
 Simplified  schematic, obtained by manually extracting main game flow from source and feeding it to Claude AI: 
+
+![Schematic](https://github.com/user-attachments/assets/6aa26c0b-2541-4bcf-96b7-bed7ec5787ef)
+
 - [Mermaid file on github](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/choplifter-simple.mermaid)
 - Schematic on draw.io
     -  [PNG](https://drive.google.com/file/d/16fPVil9pn5bM6Kw3KhkibLg-nzIeY2gQ/view?usp=sharing)
