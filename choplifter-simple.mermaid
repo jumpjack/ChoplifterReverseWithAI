@@ -1,0 +1,28 @@
+graph TD
+    A[loaderEntry] --> B{checkButtonInput}
+    B --> C[Inizializzazioni varie]
+    C --> D[startDemoMode]
+    D --> E[Inizializzazioni per la demo]
+    E --> F[mainLoopDemo]
+    F --> |Condizioni soddisfatte| G[startTitleSequence]
+    G --> H[Animazione Broderbund]
+    H --> |Animazione completata o pulsante premuto| I[startNewGame]
+    I --> J[Inizializzazioni per nuovo gioco]
+    J --> K[beginSortie]
+    K --> L{Sortite disponibili?}
+    L --> |No| M[gameOverLoss]
+    L --> |Sì| N[Inizializzazioni per nuova sortita]
+    N --> O[Visualizza banner sortita]
+    O --> P[mainLoop]
+    P --> Q{64 ostaggi salvati?}
+    Q --> |Sì| R[mainLoopEndGame]
+    Q --> |No| S[mainLoopNormal]
+    S --> P
+    R --> T[Routine di fine gioco]
+    T --> U{20 frame passati?}
+    U --> |No| T
+    U --> |Sì| G
+    M --> V[Routine di game over]
+    V --> W{20 frame passati?}
+    W --> |No| V
+    W --> |Sì| G
