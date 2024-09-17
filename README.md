@@ -18,7 +18,9 @@ Opinions/help/suggestions welcome in [discussions](https://github.com/jumpjack/C
 
 Simplified  schematic, obtained by manually extracting main game flow from source and feeding it to Claude AI: 
 - [Mermaid file on github](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/choplifter-simple.mermaid)
-- [Schematic on draw.io](https://drive.google.com/file/d/16fPVil9pn5bM6Kw3KhkibLg-nzIeY2gQ/view?usp=sharing)
+- Schematic on draw.io
+    -  [PNG](https://drive.google.com/file/d/16fPVil9pn5bM6Kw3KhkibLg-nzIeY2gQ/view?usp=sharing)
+    -  [Vector](https://app.diagrams.net/?state=%7B%22ids%22:%5B%2216fPVil9pn5bM6Kw3KhkibLg-nzIeY2gQ%22%5D,%22action%22:%22open%22,%22userId%22:%22117363290921246306004%22,%22resourceKeys%22:%7B%7D%7D)
 
 
 
