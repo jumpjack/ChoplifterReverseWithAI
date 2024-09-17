@@ -16,7 +16,9 @@ Example of partial result (a .mermaid file viewed in  [https://app.diagrams.net]
 
 Opinions/help/suggestions welcome in [discussions](https://github.com/jumpjack/ChoplifterReverseWithAI/discussions) section!
 
-Simplified  schematic, obtained by manually extracting main game flow from source and feeding it to Claude AI: 
+## Simplified  schematic
+
+Obtained by manually extracting main game flow from source and feeding it to Claude AI: 
 
 ![Schematic](https://github.com/user-attachments/assets/6aa26c0b-2541-4bcf-96b7-bed7ec5787ef)
 
@@ -25,8 +27,25 @@ Simplified  schematic, obtained by manually extracting main game flow from sourc
     -  [PNG](https://drive.google.com/file/d/16fPVil9pn5bM6Kw3KhkibLg-nzIeY2gQ/view?usp=sharing)
     -  [Vector](https://app.diagrams.net/?state=%7B%22ids%22:%5B%2216fPVil9pn5bM6Kw3KhkibLg-nzIeY2gQ%22%5D,%22action%22:%22open%22,%22userId%22:%22117363290921246306004%22,%22resourceKeys%22:%7B%7D%7D)
 
+### chkButtonInput
+
+Flowchart of joustick/keyboard manager; note the "cheat shortcut CTRL+L" to manually change level
+
+[![image](https://github.com/user-attachments/assets/2931e5ff-9bf9-46e6-bdda-3079ec6dda0c)](https://github.com/user-attachments/assets/19c545ef-895a-4456-bc93-cf9109996c3e)
 
 
+
+
+- [On github](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/chkButtonInput.mermaid)
+- [On Draw.io](https://drive.google.com/file/d/1Pd10MKvkZXtd_itzBqSMYZ5e9S-F1-0q/view?usp=sharing)
+
+## Complex diagram
+
+Game loop diagram with main subroutine calls
+
+![image](https://github.com/user-attachments/assets/a606a744-91dc-4ec6-9c73-5c0ac95a1ac7)
+
+- [On github](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/choplifter-all.mermaid)
 
 ----------
 
