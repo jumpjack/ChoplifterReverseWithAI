@@ -1,0 +1,33 @@
+graph TD
+    A[checkButtonInput] --> B{Tasto premuto?}
+    B -->|Sì| C[Pulisci strobe]
+    B -->|No| D{Button 0 premuto?}
+    D -->|Sì| E[Set carry e return]
+    D -->|No| F{Button 1 premuto?}
+    F -->|Sì| E
+    F -->|No| G[Clear carry e return]
+    
+    C --> H{Ctrl-S?}
+    H -->|Sì| I[Inverti PREFS_SOUND]
+    H -->|No| J{Ctrl-V?}
+    J -->|Sì| K[Inverti PREFS_JOY_Y]
+    J -->|No| L{Ctrl-A?}
+    L -->|Sì| M[Inverti PREFS_JOY_X]
+    L -->|No| N{ESC?}
+    N -->|Sì| O[Entra in loop di pausa]
+    N -->|No| P{Ctrl-L?}
+    P -->|Sì| Q[Attendi input per CURR_LEVEL]
+    P -->|No| R[Set carry e return]
+    
+    O --> S{Nuovo tasto premuto?}
+    S -->|No| O
+    S -->|Sì| T{È ESC?}
+    T -->|Sì| U[Clear carry e return]
+    T -->|No| C
+    
+    Q --> V[Imposta CURR_LEVEL]
+    V --> W[Clear carry e return]
+    
+    I --> R
+    K --> R
+    M --> R
