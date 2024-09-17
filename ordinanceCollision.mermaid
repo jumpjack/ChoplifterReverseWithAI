@@ -1,0 +1,22 @@
+graph TD
+    A[Inizio] --> B{Ordinanza nella zona base?}
+    B -->|Sì| C[Fine]
+    B -->|No| D{Ordinanza al livello dell'elicottero?}
+    D -->|Sì| E[Controlla collisione con elicottero]
+    D -->|No| F[Controlla collisione con tutti i carri armati]
+    E --> G{Collisione con elicottero?}
+    G -->|Sì| H[Elicottero colpito]
+    G -->|No| I[Controlla collisione con ostaggi]
+    F --> J{Collisione con carro armato?}
+    J -->|Sì| K[Carro armato distrutto]
+    J -->|No| L[Controlla collisione con casa]
+    I --> M{Collisione con ostaggio?}
+    M -->|Sì| N[Ostaggio ucciso]
+    M -->|No| L
+    L --> O{Collisione con casa?}
+    O -->|Sì| P[Casa incendiata]
+    O -->|No| C
+    H --> C
+    K --> C
+    N --> C
+    P --> C
