@@ -49,6 +49,14 @@ Game loop diagram with main subroutine calls
 - [on Draw.io](https://drive.google.com/file/d/10Mc4asAWg1l5h7Y6V1Q6bF24I9NsGwWN/view?usp=sharing)
 - [On github](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/choplifter-all.mermaid)
 
+## mainLoopDemo diagram
+
+[![image](https://github.com/user-attachments/assets/2129ac1b-d652-459f-8efc-49ff0b94b3f8)](https://github.com/user-attachments/assets/d614ce9e-0f55-4745-951a-cbd6c0e9f062)
+
+
+- [English](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-eng.mermaid)
+- [Italian](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-ita.mermaid)
+
 ----------
 
 # Original readme.md
