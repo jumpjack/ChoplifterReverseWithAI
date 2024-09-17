@@ -1,0 +1,47 @@
+graph TD
+    A[startDemoMode] --> B[Initialize game state]
+    B --> C[Initialize helicopter]
+    C --> D[Initialize counters and actions]
+    D --> E[Generate initial hostages]
+    E --> F[Show 'Your Mission: Rescue Hostages']
+    F --> G[mainLoopDemo]
+    
+    G --> H{ZP_FRAME_COUNT == 224?}
+    H -->|No| I[mainLoopDemoDeathCheck]
+    H -->|Yes| J{mainLoopDemoAction >= 0?}
+    
+    J -->|Yes| K[mainLoopDemoHeadHome]
+    J -->|No| L[Jump to startTitleSequence]
+    
+    K --> M[Set mainLoopDemoAction to 0xFF]
+    M --> N[Reset speed]
+    N --> I
+    
+    I --> O{ZP_DYING == 0?}
+    O -->|No| P[Handle death]
+    O -->|Yes| Q[mainLoopDemoFetchControls]
+    
+    Q --> R[Calculate controls from table]
+    R --> S[Apply controls to helicopter]
+    
+    S --> T[mainLoopDemoDeathCheck2]
+    T --> U{ZP_DEATHTIMER == 0?}
+    U -->|No| V[Process death animation]
+    U -->|Yes| W[checkButtonInput]
+    
+    W --> X{Input detected?}
+    X -->|Yes| Y[Jump to startNewGame]
+    X -->|No| Z[Render game]
+    
+    Z --> AA[Update game state]
+    AA --> AB{Clear 'Rescue Hostages' banner?}
+    AB -->|Yes| AC[Clear banner]
+    AB -->|No| G
+    
+    AC --> G
+    
+    P --> T
+    V --> W
+    
+    L --> END[End of demo]
+    Y --> END2[Start new game]
