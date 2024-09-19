@@ -66,7 +66,7 @@ Game loop diagram with main subroutine calls
 - [Regenerator](https://csdb.dk/release/index.php?id=149429)  Multi System
 - [C64 Debugger](https://csdb.dk/release/?id=172281) (now Retrodebugger)
 - [6502bench](https://6502bench.com/)
-- 
+- [jc64dis](https://iceteam.itch.io/jc64dis)
 
 ## Emulators
 ### Online
