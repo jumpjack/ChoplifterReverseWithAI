@@ -57,7 +57,26 @@ Game loop diagram with main subroutine calls
 - [English](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-eng.mermaid)
 - [Italian](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-ita.mermaid)
 
+
+# Resources
+
+## Disassemblers
+- [DirMaster](https://style64.org/release/dirmaster-v3.1.5-style) (.prg file extractor from .d64 disk images)
+- [C64forever](https://www.c64forever.com/) - commercial ($10), free with limitations
+- [Regenerator](https://csdb.dk/release/index.php?id=149429)  Multi System
+- [C64 Debugger](https://csdb.dk/release/?id=172281) (now Retrodebugger)
+- [6502bench](https://6502bench.com/)
+- 
+
+## Emulators
+### Online
+- https://c64.krissz.hu/online-playable-games/
+### Offline
+- Vice
+- FRODO
+
 ----------
+
 
 # Original readme.md
 
