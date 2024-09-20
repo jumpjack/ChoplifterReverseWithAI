@@ -94,7 +94,78 @@ Originale                       |   Rilocato a $0100
 08B6: 60       L08B6      RTS         |   017E: 60       L017E      RTS
 ```
 
+Only relocated:
 
+```
+ 0100: 78       L0100      SEI
+ 0101: A9 34               LDA #$34
+ 0103: 85 01               STA $01
+ 0105: A0 00               LDY #$00
+ 0107: A9 F9               LDA #$F9
+ 0109: 85 AE               STA $AE
+ 010B: A9 68               LDA #$68
+ 010D: 85 AF               STA $AF
+ 010F: A9 00               LDA #$00
+ 0111: 85 AC               STA $AC
+ 0113: 85 AD               STA $AD
+ 0115: A5 AC    L0115      LDA $AC
+ 0117: D0 02               BNE L011B
+ 0119: C6 AD               DEC $AD
+ 011B: C6 AC    L011B      DEC $AC
+ 011D: A5 AE               LDA $AE
+ 011F: D0 02               BNE L0123
+ 0121: C6 AF               DEC $AF
+ 0123: C6 AE    L0123      DEC $AE
+ 0125: B1 AE               LDA ($AE),y
+ 0127: 91 AC               STA ($AC),y
+ 0129: A5 AE               LDA $AE
+ 012B: C9 BE               CMP #$BE
+ 012D: D0 E6               BNE L0115
+ 012F: A5 AF               LDA $AF
+ 0131: C9 08               CMP #$08
+ 0133: D0 E0               BNE L0115
+ 0135: A9 01               LDA #$01
+ 0137: 85 AE               STA $AE
+ 0139: A9 08               LDA #$08
+ 013B: 85 AF               STA $AF
+ 013D: B1 AC    L013D      LDA ($AC),y
+ 013F: C9 BF               CMP #$BF
+ 0141: D0 12               BNE L0155
+ 0143: 20 78 01            JSR $0178
+ 0146: B1 AC               LDA ($AC),y
+ 0148: AA                  TAX
+ 0149: A9 00               LDA #$00
+ 014B: 91 AE    L014B      STA ($AE),y
+ 014D: 20 7F 01            JSR $017F
+ 0150: CA                  DEX
+ 0151: D0 F8               BNE L014B
+ 0153: F0 16               BEQ L016B
+ 0155: C9 CF    L0155      CMP #$CF
+ 0157: D0 0D               BNE L0166
+ 0159: 20 78 01            JSR $0178
+ 015C: B1 AC               LDA ($AC),y
+ 015E: AA                  TAX
+ 015F: 20 78 01            JSR $0178
+ 0162: B1 AC               LDA ($AC),y
+ 0164: D0 E5               BNE L014B
+ 0166: 91 AE    L0166      STA ($AE),y
+ 0168: 20 7F 01            JSR $017F  
+ 016B: 20 78 01 L016B      JSR $0178
+ 016E: D0 CD               BNE L013D
+ 0170: A9 37               LDA #$37
+ 0172: 85 01               STA $01
+ 0174: 58                  CLI
+ 0175: 4C 0D 01            JMP L010D
+ 0178: E6 AC               INC $AC
+ 017A: D0 02               BNE L017E
+ 017C: E6 AD               INC $AD
+ 017E: 60       L017E      RTS
+ ```
+Diagram:
+
+[![image](https://github.com/user-attachments/assets/5bba6468-35a3-48a8-85b1-ae7cf8dfa5d5)](https://github.com/user-attachments/assets/4ff36226-6342-4a0b-aff7-4c113fb6d908)
+
+On [draw.io](https://drive.google.com/file/d/1Q6d6qzGcbXWV57MXessnncWx0gNYwzgh/view?usp=sharing).
 
 ## Attack of mutant camels
 
