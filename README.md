@@ -73,7 +73,7 @@ Game loop diagram with main subroutine calls
                 JMP   $FCE2
 ```
 
-"FCE2" is 64738, standard soft reset routine, which is "hijacked" to launch the code stored at $8000:
+"FCE2" is 64738, standard soft reset routine, which is "hijacked" to launch the code stored at $9593:
 
 ```
 ; RESET routine
