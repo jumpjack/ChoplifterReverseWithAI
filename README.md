@@ -66,6 +66,40 @@ Game loop diagram with main subroutine calls
 40 L=1:LOAD"CHOPLIFTER- MAIN",8,1
 ```
 
+"2213" decimal is $08a5, which contains:
+
+```
+                DEC   $01
+                JMP   $FCE2
+```
+
+"FCE2" is 64738, standard soft reset routine, which is "hijacked" to launch the code stored at $8000:
+
+```
+; RESET routine
+
+FCE2   A2 FF      LDX #$FF
+FCE4   78         SEI
+FCE5   9A         TXS
+FCE6   D8         CLD
+FCE7   20 02 FD   JSR $FD02
+FCEA   D0 03      BNE $FCEF
+FCEC   6C 00 80   JMP ($8000)   ; start cartridge
+
+FCEF   8E 16 D0   STX $D016
+FCF2   20 A3 FD   JSR $FDA3
+FCF5   20 50 FD   JSR $FD50
+FCF8   20 15 FD   JSR $FD15
+FCFB   20 5B FF   JSR $FF5B
+FCFE   58         CLI
+FCFF   6C 00 A0   JMP ($A000)   ; start basic
+```
+
+"JMP ($8000)" jumps to address stored in bytes $8000-$8001, which after the game has been loaded contain $93 and $95, hence address $9593 (38291), where the game code actually begins.
+
+
+
+
 # Resources
 
 ## Disassemblers
