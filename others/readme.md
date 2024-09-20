@@ -100,6 +100,8 @@ Originale                       |   Rilocato a $0100
 
 ![image](https://github.com/user-attachments/assets/e63dd68d-8289-44fe-b6a6-cb78b3b42294)
 
+Disassembly for C64 (external site): [link](https://github.com/C64-Mark/Attack-of-the-Mutant-Camels)
+
 ### BASIC loader
 
 10 SYS 4096
