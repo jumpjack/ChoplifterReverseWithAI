@@ -49,6 +49,48 @@ Loader copies fragment 0x0835-0x0934 to 0x0100-0x01ff then jumps to 0x0100, whic
 
 ## Attack of mutant camels
 
-
 ![image](https://github.com/user-attachments/assets/e63dd68d-8289-44fe-b6a6-cb78b3b42294)
+
+### BASIC loader
+
+10 SYS 4096
+
+### Assembly loader ($1000, dec4096)
+
+![image](https://github.com/user-attachments/assets/40c8ee28-4ac0-43df-9807-e4da79de0b9c)
+
+****
+
+![image](https://github.com/user-attachments/assets/a7ae5a62-cc5a-48bd-b729-0b565d5b4323)
+
+****
+
+![image](https://github.com/user-attachments/assets/d18a4bf0-0078-4307-9a85-dfc9202763ad)
+
+(dozens of lda/sta, i.e. variables initialization)
+
+then:
+
+![image](https://github.com/user-attachments/assets/8044f6ff-aa0b-4dca-81f5-2d080e59ad8b)
+
+****
+
+![image](https://github.com/user-attachments/assets/fe7b3bad-e0f0-4445-8f19-8f41c92328c5)
+
+(other LDA/STA until...)
+
+![image](https://github.com/user-attachments/assets/aba3e373-b490-4167-951c-c9964d3ce929)
+
+****
+
+![image](https://github.com/user-attachments/assets/9bc2c5a2-31c6-4a66-b34b-01af518b03ac)
+
+(dozens of nop until...)
+
+![image](https://github.com/user-attachments/assets/66f0e94f-f486-4d61-9f41-ce30a10d656f)
+
+So at $1500 we have main game loop.
+
+
+
 
