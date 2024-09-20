@@ -57,6 +57,14 @@ Game loop diagram with main subroutine calls
 - [English](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-eng.mermaid)
 - [Italian](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-ita.mermaid)
 
+## BASIC loader
+
+```
+10 POKE53280,0:POKE53281,0:IFL=1THENSYS2213
+20 PRINT""TAB(15)"CHOPLIFTER":PRINTTAB(13)"THE BANDIT BOY"
+30 PRINTTAB(16)"WAS HERE.":PRINT"LOADING..."
+40 L=1:LOAD"CHOPLIFTER- MAIN",8,1
+```
 
 # Resources
 
