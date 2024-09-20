@@ -2,6 +2,9 @@
 
 ## Side pacman
 
+![image](https://github.com/user-attachments/assets/5ed7d80d-ed3f-41ec-8652-69cd2b2ebc0a)
+
+
 ### Basic loader
 
 `2204 SYS 2087 SHORT VERSION BY MR.Z    `
@@ -45,3 +48,7 @@ Loader copies fragment 0x0835-0x0934 to 0x0100-0x01ff then jumps to 0x0100, whic
 
 
 ## Attack of mutant camels
+
+
+![image](https://github.com/user-attachments/assets/e63dd68d-8289-44fe-b6a6-cb78b3b42294)
+
