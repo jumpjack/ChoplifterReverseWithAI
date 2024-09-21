@@ -57,7 +57,7 @@ Game loop diagram with main subroutine calls
 - [English](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-eng.mermaid)
 - [Italian](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/mainLoopDemo-all-ita.mermaid)
 
-## BASIC loader
+## BASIC loader for one (of many) Commodore 64 version
 
 ```
 10 POKE53280,0:POKE53281,0:IFL=1THENSYS2213
