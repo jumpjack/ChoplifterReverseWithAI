@@ -35,7 +35,7 @@ Hex dump:
 000050: 31 2c 31 00 03 d3 ff 00 00 ff ff 00 00 ff ff 00  1,1..S..........
 ```
 
-Dumo analysis
+Dump analysis
 ```
 01 08: Program start address = $0801
 
