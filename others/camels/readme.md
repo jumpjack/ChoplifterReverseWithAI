@@ -12,7 +12,7 @@ Advance of The Mega Camels - AMC (Llamasoft)[cr wcs].d64
 
 ### Main BASIC program
 
-- PRG file
+- [PRG file](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/others/camels/PRG/A.M.C..PRG)
 
 As seen on screen (VICE):
 
