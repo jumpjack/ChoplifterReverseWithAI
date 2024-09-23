@@ -35,6 +35,25 @@ Hex dump:
 000050: 31 2c 31 00 03 d3 ff 00 00 ff ff 00 00 ff ff 00  1,1..S..........
 ```
 
+Dumo analysis
+```
+01 08: Program start address = $0801
+
+$0801   17 08              end of line = $0817
+$0803   c1 07              line number = $06c1 = dec1985
+$0805   00                 trick to hide program code?
+$0806   57 43 53 20       "WCS "
+$080a   9e                "SYS" token
+$080b   32 30 37 33 20    "2073 " ($0819)
+$0810   20 20 57 43 53 20 "  WCS "
+$0816   00
+$0817   00
+$0818   00
+$0819   a9 36             lda   #$36            
+$081b   85 01             sta   $01             
+$081d   4c 9c 30          jmp   $309C           
+
+``` 
 
 ## 002 
 
