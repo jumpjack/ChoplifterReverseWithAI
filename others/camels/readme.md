@@ -40,7 +40,7 @@ Dump analysis
 01 08: Program start address = $0801
 
 $0801   17 08              end of line = $0817
-$0803   c1 07              line number = $06c1 = dec1985
+$0803   c1 07              line number = $07c1 = dec1985
 $0805   00                 trick to hide program code?
 $0806   57 43 53 20       "WCS "
 $080a   9e                "SYS" token
