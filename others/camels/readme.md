@@ -67,9 +67,11 @@ Extracted with https://www.c64-tools.com/basic-2-extractor
 
 ![image](https://github.com/user-attachments/assets/e0bb7226-38d2-4c51-9137-2b635606f970)
 
+- Main lop: $1500-$1560?
 - Charset from $2000
 - Sprites from $3000
-- 
+
+
 ## 003
 
 ###
