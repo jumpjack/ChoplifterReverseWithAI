@@ -4,6 +4,12 @@
 
 ![image](https://github.com/user-attachments/assets/5ed7d80d-ed3f-41ec-8652-69cd2b2ebc0a)
 
+- [Version by mr.Z](https://csdb.dk/release/?id=184356)
+- [Mirror](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/others/Pacman%20%5BMr.%20Z%5D.d64)
+
+### Disk
+
+![image](https://github.com/user-attachments/assets/56ecfc23-2f10-4a6a-8cb2-738613ecf38c)
 
 ### Basic loader
 
