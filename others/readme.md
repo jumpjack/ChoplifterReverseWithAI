@@ -1,9 +1,10 @@
 # Other games disassembled
 
-## Resources
+## How to
 
-- [Online .d64 viewer and PRG extractor](https://d64.co/#)
-- [Online disassembler](https://www.white-flame.com/wfdis/) 
+- Download a .d64 ROM image from [somewhere](https://csdb.dk/release/?id=184356)
+- Extract PRG file from .d64 disk image with this [online .d64 viewer and PRG extractor](https://d64.co/#)
+- Upload the PRG file to this [online disassembler](https://www.white-flame.com/wfdis/) 
 
 ## Side pacman
 
