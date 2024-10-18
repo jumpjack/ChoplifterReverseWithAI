@@ -114,7 +114,64 @@ Originale                             |   Rilocato a $0100
 08B2: D0 02               BNE L08B6   |   017A: D0 02               BNE L017E
 08B4: E6 AD               INC $AD     |   017C: E6 AD               INC $AD
 08B6: 60       L08B6      RTS         |   017E: 60       L017E      RTS
-(continue...)
+      
+08B7: E6 AE               INC aAE     |  017F: E6 AE               INC aAE     
+08B9: D0 02               BNE b08BD   |  0181: D0 02               BNE b0183
+08BB: E6 AF               INC aAF     |  0183: E6 AF               INC aAF
+08BD: 60          b08BD   RTS         |  0185: 60          b0185   RTS 
+
+08BE: 0B 08               ANC #$08    |  0186: 0B 08               ANC #$08
+08C0: 0A                  ASL         |  0188: 0A                  ASL 
+08C1: 00 9E               BRK #$9E    |  0189: 00 9E               BRK #$9E
+08C3: 32                  JAM         |  018B: 32                  JAM 
+08C4: 30 36               BMI b08FC   |  018C: 30 36               BMI b01C4
+08C6: 31 BF               AND (pBF),Y |  018E: 31 BF               AND (pBF),Y
+08C8: 03 A9               SLO (pA9,X) |  0190: 03 A9               SLO (pA9,X)
+08CA: 00 8D               BRK #$8D    |  0192: 00 8D               BRK #$8D
+08CC: 20 D0 8D            JSR e8DD0   |  0194: 20 D0 01            JSR e01D0
+08CF: 21 D0       f08CF   AND (pD0,X) |  0197: 21 D0       f0197   AND (pD0,X)
+08D1: 20 60 09            JSR s0960   |  0199: 20 60 01            JSR s0160
+08D4: AD 0E DC            LDA $DC0E   |  019C: AD 0E DC            LDA $DC0E   
+08D7: 29 FE               AND #$FE    |  019F: 29 FE               AND #$FE
+08D9: 8D 0E DC            STA $DC0E   |  01A1: 8D 0E DC            STA $DC0E   
+08DC: 78                  SEI         |  01A4: 78                  SEI 
+08DD: A5 01               LDA a01     |  01A5: A5 01               LDA a01
+08DF: 29 FC               AND #$FC    |  01A7: 29 FC               AND #$FC
+08E1: 09 01               ORA #$01    |  01A9: 09 01               ORA #$01
+08E3: 85 01               STA a01     |  01AB: 85 01               STA a01
+08E5: A9 F6               LDA #<p0AF6 |  01AD: A9 F6               LDA #<p01F6
+08E7: A0 0A               LDY #>p0AF6 |  01AF: A0 0A               LDY #>p01F6
+08E9: 8D FE FF            STA aFFFE   |  01B1: 8D FE FF            STA aFFFE   
+08EC: 8C FF FF            STY aFFFF   |  01B4: 8C FF FF            STY aFFFF   
+08EF: A9 AD               LDA #<p10AD |  01B7: A9 AD               LDA #<p11AD
+08F1: A0 10               LDY #>p10AD |  01B9: A0 10               LDY #>p11AD
+08F3: 8D FC FF            STA aFFFC   |  01BB: 8D FC FF            STA aFFFC   
+08F6: 8C FD FF            STY aFFFD   |  01BE: 8C FD FF            STY aFFFD   
+08F9: 8D FA FF            STA aFFFA   |  01C1: 8D FA FF            STA aFFFA   
+08FC: 8C FB FF    b08FC   STY aFFFB   |  01C4: 8C FB FF    b01C4   STY aFFFB   
+08FF: A9 00               LDA #$00    |  01C7: A9 00               LDA #$00
+0901: A2 B2               LDX #$B2    |  01C9: A2 B2               LDX #$B2
+0903: 95 00       b0903   STA f00,X   |  01CB: 95 00       b01CB   STA f00,X
+0905: CA                  DEX         |  01CD: CA                  DEX 
+0906: E0 02               CPX #$02    |  01CE: E0 02               CPX #$02
+0908: D0 F9               BNE b0903   |  01D0: D0 F9               BNE b01CB
+090A: 8D 15 D0            STA $D015   |  01D2: 8D 15 D0            STA $D015   
+090D: 8D 02 DC            STA $DC02   |  01D5: 8D 02 DC            STA $DC02   
+0910: 8D 03 DC            STA $DC03   |  01D8: 8D 03 DC            STA $DC03   
+0913: AD 02 DD            LDA $DD02   |  01DB: AD 02 DD            LDA $DD02   
+0916: 09 03               ORA #$03    |  01DE: 09 03               ORA #$03
+0918: 8D 02 DD            STA $DD02   |  01E0: 8D 02 DD            STA $DD02   
+091B: AD 00 DD            LDA $DD00   |  01E3: AD 00 DD            LDA $DD00   
+091E: 29 FC               AND #$FC    |  01E6: 29 FC               AND #$FC
+0920: 09 02               ORA #$02    |  01E8: 09 02               ORA #$02
+0922: 8D 00 DD            STA $DD00   |  01EA: 8D 00 DD            STA $DD00   
+0925: A9 70               LDA #$70    |  01ED: A9 70               LDA #$70
+0927: 09 08               ORA #$08    |  01EF: 09 08               ORA #$08
+0929: 8D 18 D0            STA $D018   |  01F1: 8D 18 D0            STA $D018   
+092C: AD 11 D0            LDA $D011   |  01F4: AD 11 D0            LDA $D011   
+092F: 09 20               ORA #$20    |  01F7: 09 20               ORA #$20
+0931: 8D 11 D0            STA $D011   |  01F9: 8D 11 D0            STA $D011   
+0934: 4C 07 09            JMP j0907   |  01FC: 4C 07 01            JMP j0107
 ```
 
 Only relocated, with AI-generated comments:
