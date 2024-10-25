@@ -33,13 +33,9 @@ dec 2087 is $0827
 
 ### Hacking:
 
-Subito dopo il caricamento parte il programma, ma se si ferma e si scrive poke 2187,0:poke 2216,0 nell'emulatore, alla ripartenza si bloccherà al primo ciclo di copia; poi con 
+Subito dopo il caricamento parte il programma, ma se si ferma e si memorizza 0 in $088b e $08a8 e si fa continuare l'esecuzione, il programma si fermerà dopo il primo ciclo di copia; scrivendo poi 0xF0 in $088b e saltando proprio a  $088b  si esegue il secondo ciclo ma non si avvia il gioco. Per avviare il gioco, mettere 0xA9 in $08a8 e saltare a $08a8.
 
-poke 2187,240 : sys 2187
 
-si riavvia e si esegue il secondo ciclo, che si fermerà subito prima dell'avvio del gioco. Per avviare infine il gioco:
-
-sys 2216,169: sys 2216
 
 
 ### Assembly loader (starting from 2087dec, 0x0827, finishing at 0x0837)
