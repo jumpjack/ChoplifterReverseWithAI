@@ -173,7 +173,16 @@ Originale                             |   Rilocato a $0100
 
 ```
 
-Only relocated, with AI-generated comments:
+Codice rilocato, commentato dall'intelligenza artificiale.
+
+In un primo momento il codice copia il contenuto tra  $08be e $68f8 (24634 byte) e lo incolla a partire da $9fc5 fino a $ffff, procedendo al contrario.
+
+In una seconda fase copia da dove è arrivato il contatore ($9fc5) e incolla a partire da $0801, non un numero di byte predefinito, ma finchè non trova il carattere $bf. Questo significa che prende questa serie di byte (messa lì nel loop precedente)...
+
+08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03
+
+...e la memorizza a partire da $0801; in pratica, carica un nuovo programma basic che consiste in "sys 2061", cioè un salto alla locazione $080D.
+
 
 ```
 ; Gruppo 1: Inizializzazione e setup dei puntatori
@@ -189,8 +198,8 @@ L0100   sei                 ; Disabilita interrupts
         sta $ac
         sta $ad             ; Imposta $ac-$ad a $0000 (indirizzo destinazione)
 
-; Gruppo 2: Loop principale di copia/decompressione: copia segmento di memoria $08be-$68f8 a ritroso da $FFFF in giù ,
-; quindi quello che era in $08be va a finire in $9fc5 (dec40901)
+; Gruppo 2: Loop principale di copia/decompressione: copia segmento di memoria $08be-$68f8 a ritroso da $FFFF in giù fino a $9fc5. Il puntatore-sorgente è $ae,$af, la destinazione $ac,$ad.
+
 L0115   lda $ac
         bne L011b
         dec $ad             ; Decrementa byte alto destinazione se necessario
@@ -206,25 +215,27 @@ L0123   dec $ae             ; Decrementa indirizzo sorgente
         bne L0115
         lda $af
         cmp #$08
-        bne L0115           ; Continua finché sorgente = $08be
-        lda #$01
+        bne L0115           ; Continua finché sorgente = $08be; contatore Y inutilizzato.
+
+; Gruppo 3: Elaborazione dati 
+
+        lda #$01            ; Reimposta sorgente $ae,$af a $0801, ma ora la sorgente diventa destinazione!
         sta $ae
         lda #$08
-        sta $af             ; Reimposta sorgente a $0801
+        sta $af             
 
-; Gruppo 3: Elaborazione dati (probabile decompressione)
-L013d   lda ($ac),y         ; Legge byte da destinazione
+L013d   lda ($ac),y         ; Legge byte da $ac,$ad, dove è arrivata la routine di prima ($9fc5) finchè non trova il terminatore $bf, utilizzando stavolta il contatore Y come offset, che all'inizio vale 0.
         cmp #$bf
-        bne L0155           ; Se non è $bf, salta
-        jsr L0178           ; Incrementa destinazione
-        lda ($ac),y         ; Legge contatore
-        tax                 ; Mette contatore in X
+        bne L0155           ; Se non è $BF, va a controllare se è $CF: se non lo è, scrive in destinazione ($ae,$af) e la incrementa
+        jsr L0178           ; Incrementa $ac,$ad (sorgente)
+        lda ($ac),y         ; Legge da $ac,$ad
+        tax                 ; Mette contatore Y anche in X
         lda #$00
-L014b   sta ($ae),y         ; Scrive 0 a indirizzo sorgente
-        jsr L017f           ; Incrementa indirizzo sorgente
-        dex
+L014b   sta ($ae),y         ; Scrive 0 in $ae,$af (partendo da $0801)
+        jsr L017f           ; Incrementa $ae,$af (destinazione)
+        dex                 ; decrementa nuovo contatore
         bne L014b           ; Ripete per il numero di volte in contatore
-        beq L016b           ; Salta sempre
+        beq L016b           ; Quando ha finito di copiare, prosegue saltando la subroutine L0155 qui sotto
 
 L0155   cmp #$cf
         bne L0166           ; Se non è $cf, salta
@@ -235,10 +246,10 @@ L0155   cmp #$cf
         lda ($ac),y         ; Legge secondo byte (possibile valore da copiare)
         bne L014b           ; Se non zero, torna a scrivere
 
-L0166   sta ($ae),y         ; Scrive byte a indirizzo sorgente
-        jsr L017f           ; Incrementa indirizzo sorgente
+L0166   sta ($ae),y         ; Scrive in $ae,$af
+        jsr L017f           ; Incrementa $ae,$af 
 
-L016b   jsr L0178           ; Incrementa indirizzo destinazione
+L016b   jsr L0178           ; Incrementa $ac,$ad
         bne L013d           ; Continua loop se non zero
         lda #$37
         sta $01             ; Ripristina configurazione memoria normale
@@ -246,14 +257,14 @@ L016b   jsr L0178           ; Incrementa indirizzo destinazione
         jmp L080D           ; Salta a L080D 
 
 ; Gruppo 4: Subroutine di incremento puntatori
-L0178   inc $ac             ; Incrementa byte basso destinazione
+L0178   inc $ac             ; Incrementa byte basso 
         bne L017e
-        inc $ad             ; Incrementa byte alto destinazione se necessario
+        inc $ad             ; Incrementa byte alto  se necessario
 L017e   rts
 
-L017f   inc $ae             ; Incrementa byte basso sorgente
+L017f   inc $ae             ; Incrementa byte basso 
         bne L0185
-        inc $af             ; Incrementa byte alto sorgente se necessario
+        inc $af             ; Incrementa byte alto se necessario
 L0185   rts
 
 ; Gruppo 5: Dati (probabile programma BASIC)
