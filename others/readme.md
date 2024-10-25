@@ -217,26 +217,28 @@ L0123   dec $ae             ; Decrementa indirizzo sorgente
         cmp #$08
         bne L0115           ; Continua finché sorgente = $08be; contatore Y inutilizzato.
 
-; Gruppo 3: Elaborazione dati 
 
-        lda #$01            ; Reimposta sorgente $ae,$af a $0801, ma ora la sorgente diventa destinazione!
+; ----------- Gruppo 3: Seconda copia (e altro?): scrive in area BASIC programma presente inzialmente da $08be (ora in $9fc5)  -------------
+        lda #$01            ;  $ae,$af diventa la destinazione e viene impostato a $0801.
         sta $ae
         lda #$08
         sta $af             
-
-L013d   lda ($ac),y         ; Legge byte da $ac,$ad, dove è arrivata la routine di prima ($9fc5) finchè non trova il terminatore $bf, utilizzando stavolta il contatore Y come offset, che all'inizio vale 0.
+L013d   lda ($ac),y         ; Legge byte da $ac,$ad, dove è arrivata la routine di prima ($9fc5) finchè non trova il terminatore $bf.
         cmp #$bf
-        bne L0155           ; Se non è $BF, va a controllare se è $CF: se non lo è, scrive in destinazione ($ae,$af) e la incrementa
+        bne L0155           ; Se non è $BF, controlla se è $CF: se non lo è, scrive in destinazione ($ae,$af) e la incrementa
         jsr L0178           ; Incrementa $ac,$ad (sorgente)
-        lda ($ac),y         ; Legge da $ac,$ad
+        lda ($ac),y         ; Legge da $ac,$ad + Y
         tax                 ; Mette contatore Y anche in X
         lda #$00
-L014b   sta ($ae),y         ; Scrive 0 in $ae,$af (partendo da $0801)
+L014b   sta ($ae),y         ; Scrive 0 in $ae,$af + Y (partendo da $0801)
         jsr L017f           ; Incrementa $ae,$af (destinazione)
-        dex                 ; decrementa nuovo contatore
+        dex                 ; X--  ;  decrementa nuovo contatore
         bne L014b           ; Ripete per il numero di volte in contatore
         beq L016b           ; Quando ha finito di copiare, prosegue saltando la subroutine L0155 qui sotto
 
+
+
+; ---- subroutines ---
 L0155   cmp #$cf
         bne L0166           ; Se non è $cf, salta
         jsr L0178           ; Incrementa destinazione
@@ -249,14 +251,18 @@ L0155   cmp #$cf
 L0166   sta ($ae),y         ; Scrive in $ae,$af
         jsr L017f           ; Incrementa $ae,$af 
 
+; ------ fine subroutines ---------
+
+
 L016b   jsr L0178           ; Incrementa $ac,$ad
         bne L013d           ; Continua loop se non zero
+
         lda #$37
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
         jmp L080D           ; Salta a L080D 
 
-; Gruppo 4: Subroutine di incremento puntatori
+; ---------- Gruppo 4: Subroutine di incremento puntatori ---------
 L0178   inc $ac             ; Incrementa byte basso 
         bne L017e
         inc $ad             ; Incrementa byte alto  se necessario
@@ -267,17 +273,17 @@ L017f   inc $ae             ; Incrementa byte basso
         inc $af             ; Incrementa byte alto se necessario
 L0185   rts
 
-; Gruppo 5: Dati (probabile programma BASIC)
+; Gruppo 5: Dati (programma BASIC (era in $08be al caricamento del .prg))
 L0186   .byte $0b, $08      ; Puntatore alla prossima linea BASIC
         .byte $0a, $00      ; Numero di linea (10)
         .byte $9e           ; Token SYS
         .ascii "2061"       ; Indirizzo per SYS
-        .byte $bf           ; Token PEEK
+        .byte $bf           ; marker di fine programma usato dalla routine basic, ma anche token valido (PEEK)
         .byte $03           ; Fine linea BASIC
 
 
 ; Gruppo 6: Inizializzazione hardware e configurazione sistema
-L0191   lda #$00
+L0191   lda #$00            ; (era in $08c9)
         sta d020_vBorderCol ; Imposta colore bordo a nero
         sta d021_vBackgCol0 ; Imposta colore sfondo a nero
         jsr e8DD0           ; Chiama subroutine (non visibile qui)
