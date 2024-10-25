@@ -260,14 +260,14 @@ L0166   sta ($ae),y         ; Scrive in $ae,$af
 
 
 L016b   jsr L0178           ; Incrementa $ac,$ad
-        bne L013d           ; Continua loop se non zero. *** Si può mettere un BRK qui ($016e,
-                            ; inizialmente $08a6) per esaminare il risultato del loader ***
+        bne L013d           ; Continua loop se non zero. 
 
 ; ------ fine loop ---------
 
 
 
-        lda #$37
+        lda #$37            ; *** Si può mettere un BRK qui ($0170,
+                            ; inizialmente $08a8) per esaminare il risultato del loader *** 
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
         jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC) (??)
