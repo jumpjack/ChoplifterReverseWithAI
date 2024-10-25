@@ -35,6 +35,8 @@ dec 2087 is $0827
 
 Subito dopo il caricamento parte il programma, ma se si ferma e si memorizza 0 in $088b e $08a8 e si fa continuare l'esecuzione, il programma si fermerà dopo il primo ciclo di copia; scrivendo poi 0xF0 in $088b e saltando proprio a  $088b  si esegue il secondo ciclo ma non si avvia il gioco. Per avviare il gioco, mettere 0xA9 in $08a8 e saltare a $08a8.
 
+Oppure mettere un breakpoint in $0153 e uno in $0170 prima di caricare il file.
+
 
 
 
