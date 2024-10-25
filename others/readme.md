@@ -239,7 +239,10 @@ L014b   sta ($ae),y         ; Scrive 0 in $ae,$af + Y (partendo da $0801)
         jsr L017f           ; Incrementa $ae,$af (destinazione)
         dex                 ; X--  ;  decrementa nuovo contatore
         bne L014b           ; Ripete per il numero di volte in contatore
-        beq L016b           ; Quando ha finito di copiare, prosegue saltando la subroutine L0155 qui sotto
+        beq L016b           ; Condizione sempre veram quindi equivalente a JMP,  ma più corta:
+                            ; quando ha finito di copiare, prosegue saltando la subroutine L0155 qui sotto
+                            ; *** Si può mettere un BRK qui ($0153, inizialmente $088b, dec 2187) per controllare
+                            ; il risultato del primo ciclo di copia. Valore originale: $F0, dec 240 ***
 
 
 
@@ -266,8 +269,8 @@ L016b   jsr L0178           ; Incrementa $ac,$ad
 
 
 
-        lda #$37            ; *** Si può mettere un BRK qui ($0170,
-                            ; inizialmente $08a8) per esaminare il risultato del loader *** 
+        lda #$37            ; *** Si può mettere un BRK qui ($0170, inizialmente $08a8, dec 2216) per esaminare 
+                            ; il risultato del secondo ciclo di copia; valore iniziale: $a9, dec169 *** 
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
         jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC) (??)
