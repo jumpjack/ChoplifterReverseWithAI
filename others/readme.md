@@ -31,6 +31,17 @@ It gets loaded from $0801 (BASIC area) to $68f9
 
 dec 2087 is $0827
 
+### Hacking:
+
+Subito dopo il caricamento parte il programma, ma se si ferma e si scrive poke 2187,0:poke 2216,0 nell'emulatore, alla ripartenza si bloccherà al primo ciclo di copia; poi con 
+
+poke 2187,240 : sys 2187
+
+si riavvia e si esegue il secondo ciclo, che si fermerà subito prima dell'avvio del gioco. Per avviare infine il gioco:
+
+sys 2216,169: sys 2216
+
+
 ### Assembly loader (starting from 2087dec, 0x0827, finishing at 0x0837)
 
 ![image](https://github.com/user-attachments/assets/a906b0ea-f22c-4a7d-8d80-c3ece6d94591)
