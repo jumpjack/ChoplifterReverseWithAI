@@ -218,14 +218,19 @@ L0123   dec $ae             ; Decrementa indirizzo sorgente
         bne L0115           ; Continua finché sorgente = $08be; contatore Y inutilizzato.
 
 
-; ----------- Gruppo 3: Seconda copia (e altro?): scrive in area BASIC programma presente inzialmente da $08be (ora in $9fc5)  -------------
+; -------------
+; Gruppo 3: Seconda copia (e altro?): scrive in area BASIC programma presente inzialmente
+; da $08be (ora in $9fc5)
+; -------------
         lda #$01            ;  $ae,$af diventa la destinazione e viene impostato a $0801.
         sta $ae
         lda #$08
         sta $af             
-L013d   lda ($ac),y         ; Legge byte da $ac,$ad, dove è arrivata la routine di prima ($9fc5) finchè non trova il terminatore $bf.
+L013d   lda ($ac),y         ; Legge byte da $ac,$ad, dove è arrivata la routine di prima ($9fc5) finchè
+                            ; non trova il terminatore $bf.
         cmp #$bf
-        bne L0155           ; Se non è $BF, controlla se è $CF: se non lo è, scrive in destinazione ($ae,$af) e la incrementa
+        bne L0155           ; Se non è $BF, controlla se è $CF: se non lo è, scrive in
+                            ; destinazione ($ae,$af) e la incrementa
         jsr L0178           ; Incrementa $ac,$ad (sorgente)
         lda ($ac),y         ; Legge da $ac,$ad + Y
         tax                 ; Mette contatore Y anche in X
@@ -255,12 +260,17 @@ L0166   sta ($ae),y         ; Scrive in $ae,$af
 
 
 L016b   jsr L0178           ; Incrementa $ac,$ad
-        bne L013d           ; Continua loop se non zero
+        bne L013d           ; Continua loop se non zero. *** Si può mettere un BRK qui ($016e,
+                            ; inizialmente $08a6) per esaminare il risultato del loader ***
+
+; ------ fine loop ---------
+
+
 
         lda #$37
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
-        jmp L080D           ; Salta a L080D 
+        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC) (??)
 
 ; ---------- Gruppo 4: Subroutine di incremento puntatori ---------
 L0178   inc $ac             ; Incrementa byte basso 
@@ -278,7 +288,8 @@ L0186   .byte $0b, $08      ; Puntatore alla prossima linea BASIC
         .byte $0a, $00      ; Numero di linea (10)
         .byte $9e           ; Token SYS
         .ascii "2061"       ; Indirizzo per SYS
-        .byte $bf           ; marker di fine programma usato dalla routine basic, ma anche token valido (PEEK)
+        .byte $bf           ; marker di fine programma usato dalla routine basic, ma anche
+                            ; token valido (PEEK)
         .byte $03           ; Fine linea BASIC
 
 
