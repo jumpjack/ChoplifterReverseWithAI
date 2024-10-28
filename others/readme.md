@@ -312,14 +312,18 @@ L016b   jsr L0178           ; Incrementa $ac,$ad
         cli                 ; Riabilita interrupts
         jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC, che inizialmente partiva da $08BE, ma chè stato rilocato e decompresso in $0801; dall'originale:
 
+     BE BF C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA
+8BE: **0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00**
 
 diventerebbe:
 
       01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
-0801: 0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00
+0801: **0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00**
 
 Ma in realtà la decompressione trasforma $BF in "00 00 00", quindi:
-0801: 0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00
+
+      01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
+0801: **0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00**
 
 Il "00 00 00" è il marker di fine basic, mentra "A9 00", che si traduce in "LDA #$00", si troverà in 080D, che è proprio l'indirizzo di salto del SYS, nonchè l'indirizzo di salto alla fine del loader.
 
