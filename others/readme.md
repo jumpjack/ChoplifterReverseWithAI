@@ -43,10 +43,15 @@ Oppure mettere breakpoint in:
 
 
 
-### Assembly loader (starting from 2087dec, 0x0827, finishing at 0x0837)
+### Loaded PRG:
 
-![image](https://github.com/user-attachments/assets/a906b0ea-f22c-4a7d-8d80-c3ece6d94591)
+#### BASIC part
 
+0801   25 08 9C 08 9E 32 30 38 37 20 53 48 4F 52 54 20 ; "SYS 2087" followed by comments
+0811   56 45 52 53 49 4F 4E 20 42 59 20 4D 52 2E 5A 20
+0821   20 20 20 00 00 00 
+
+#### Assembly part (from $0x0807 = 2087)
 ```
 0827: A2 00     LDX #$00    ; Carica il valore 0 nel registro X
 0829: BD 38 08  LDA $0838,X ; Carica un byte dalla memoria all'indirizzo $0838+X in A
@@ -133,7 +138,8 @@ Originale                             |   Rilocato a $0100
 
 
 ; --------------- blocco di righe basic (sys 2061, cioè 0x080D) ------------
-08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03
+08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03  ; Nota: "$BF 03" verrà convertito in "00 00 00" dal decompressore, quando
+                                        ; il programma verrà trasferito in $0801.
 ; --------------------------------------------------------------------------
 
 
@@ -193,7 +199,15 @@ In una seconda fase copia da dove è arrivato il contatore ($9fc5) e incolla a p
 
 08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03
 
-...e la memorizza a partire da $0801; in pratica, carica un nuovo programma basic che consiste in "sys 2061", cioè un salto alla locazione $080D.
+...e la memorizza a partire da $0801; in pratica, carica un nuovo programma basic che consiste in "sys 2061", cioè un salto alla locazione $080D; al momento della decompressione/spostamento, però, "$BF" verrà sostituito con "00 00 00":
+
+      01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
+0801: 0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00
+
+Diventa:
+0801: 0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00
+
+Il "00 00 00" è il marker di fine basic, mentra "A9 00", che si traduce in "LDA #$00", si troverà in 080D, che è proprio l'indirizzo di salto del SYS, nonchè l'indirizzo di salto alla fine del loader.
 
 
 ```
@@ -296,35 +310,18 @@ L016b   jsr L0178           ; Incrementa $ac,$ad
                             ; il risultato del secondo ciclo di copia; valore iniziale: $a9, dec169 *** 
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
-        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC, che inizialmente partiva da $08BE:
+        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC, che inizialmente partiva da $08BE, ma chè stato rilocato e decompresso in $0801; dall'originale:
 
 
-08BE   0B                   ???                ;%00001011
-08BF   08                   PHP
-08C0   0A                   ASL A
-08C1   00                   BRK
-08C2   9E                   ???                ;%10011110
-08C3   32                   ???                ;%00110010 '2'
-08C4   30 36                BMI L08FC
-08C6   31 BF                AND ($BF),Y
-08C8   03                   ???                ;%00000011
-08C9   A9 00                LDA #$00
-08CB   8D 20 D0             STA $D020
-08CE   8D 21 D0             STA $D021
-....
+diventerebbe:
 
-Rilocandolo in $0801 dove viene effettivamente copiato, diventa:
+      01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
+0801: 0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00
 
-0801   0B 08 0A  00  9E 32  30 36  31 BF 03 ; SYS 2061              
-080C   A9 00                LDA #$00
-080E   8D 20 D0             STA $D020
-0811   8D 21 D0             STA $D021
-0814   20 60 09             JSR $0960
-0817   AD 0E DC             LDA $DC0E
-...
-...
+Ma in realtà la decompressione trasforma $BF in "00 00 00", quindi:
+0801: 0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00
 
-2061 sarebbe 0x080D, mentre qui l'assembly valido inizia a $0x080c, quindi non capisco...
+Il "00 00 00" è il marker di fine basic, mentra "A9 00", che si traduce in "LDA #$00", si troverà in 080D, che è proprio l'indirizzo di salto del SYS, nonchè l'indirizzo di salto alla fine del loader.
 
 
 ; ---------- Gruppo 4: Subroutine di incremento puntatori ---------
