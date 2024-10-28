@@ -239,19 +239,28 @@ L0123   dec $ae             ; Decrementa indirizzo sorgente
         lda #$08
         sta $af             
 L013d   lda ($ac),y         ; Legge byte da $ac,$ad, dove è arrivata la routine di prima ($9fc5) finchè
-                            ; non trova il terminatore $bf.
+                            ; non trova il marker $bf.
         cmp #$bf
         bne L0155           ; Se non è $BF, controlla se è $CF: se non lo è, scrive in
                             ; destinazione ($ae,$af) e la incrementa
+
+                            ; Se è $BF:
+; ---- ciclo per $BF: scrive un certo numero di zeri ----
         jsr L0178           ; Incrementa $ac,$ad (sorgente)
         lda ($ac),y         ; Legge da $ac,$ad + Y
-        tax                 ; Mette contatore Y anche in X
-        lda #$00
-L014b   sta ($ae),y         ; Scrive 0 in $ae,$af + Y (partendo da $0801)
+        tax                 ; Mette in X il valore appena letto, per usarlo come contatore
+
+        lda #$00            ; Scrive un numero di zeri pari al valore di X, dopodichè tramite il
+                            ; beq L016b esce da questo loop e torna a quello principale di controllo/copiatura L103d.
+
+; ---- Ciclo per $CF: scrive un valore un certo numero di volte ---
+L014b   sta ($ae),y         ; Scrive in $ae,$af + Y: scrive uno zero se il flusso arriva qui dal BNE qui sotto,
+                            ; ma scrive il valore letto dalla memoria se invece torna qui dalla subroutine L0155.
         jsr L017f           ; Incrementa $ae,$af (destinazione)
-        dex                 ; X--  ;  decrementa nuovo contatore
+        dex                 ; X--  ;  decrementa  contatore
         bne L014b           ; Ripete per il numero di volte in contatore
-        beq L016b           ; Condizione sempre veram quindi equivalente a JMP,  ma più corta:
+
+        beq L016b           ; Condizione sempre vera, quindi equivalente a JMP,  ma più corta:
                             ; quando ha finito di copiare, prosegue saltando la subroutine L0155 qui sotto
                             ; *** Si può mettere un BRK qui ($0153, inizialmente $088b, dec 2187) per controllare
                             ; il risultato del primo ciclo di copia. Valore originale: $F0, dec 240 ***
@@ -261,9 +270,11 @@ L014b   sta ($ae),y         ; Scrive 0 in $ae,$af + Y (partendo da $0801)
 ; ---- subroutines ---
 L0155   cmp #$cf
         bne L0166           ; Se non è $cf, salta
+
+                            ; Se è CF:
         jsr L0178           ; Incrementa destinazione
-        lda ($ac),y         ; Legge primo byte (possibile contatore)
-        tax
+        lda ($ac),y         ; Legge primo byte e
+        tax                 ; lo memorizza come contatore.
         jsr L0178           ; Incrementa destinazione
         lda ($ac),y         ; Legge secondo byte (possibile valore da copiare)
         bne L014b           ; Se non zero, torna a scrivere
