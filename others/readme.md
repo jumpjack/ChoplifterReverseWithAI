@@ -296,7 +296,36 @@ L016b   jsr L0178           ; Incrementa $ac,$ad
                             ; il risultato del secondo ciclo di copia; valore iniziale: $a9, dec169 *** 
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
-        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC) (??)
+        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC, che inizialmente partiva da $08BE:
+
+
+08BE   0B                   ???                ;%00001011
+08BF   08                   PHP
+08C0   0A                   ASL A
+08C1   00                   BRK
+08C2   9E                   ???                ;%10011110
+08C3   32                   ???                ;%00110010 '2'
+08C4   30 36                BMI L08FC
+08C6   31 BF                AND ($BF),Y
+08C8   03                   ???                ;%00000011
+08C9   A9 00                LDA #$00
+08CB   8D 20 D0             STA $D020
+08CE   8D 21 D0             STA $D021
+....
+
+Rilocandolo in $0801 dove viene effettivamente copiato, diventa:
+
+0801   0B 08 0A  00  9E 32  30 36  31 BF 03 ; SYS 2061              
+080C   A9 00                LDA #$00
+080E   8D 20 D0             STA $D020
+0811   8D 21 D0             STA $D021
+0814   20 60 09             JSR $0960
+0817   AD 0E DC             LDA $DC0E
+...
+...
+
+2061 sarebbe 0x080D, mentre qui l'assembly valido inizia a $0x080c, quindi non capisco...
+
 
 ; ---------- Gruppo 4: Subroutine di incremento puntatori ---------
 L0178   inc $ac             ; Incrementa byte basso 
