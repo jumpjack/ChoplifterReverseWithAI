@@ -21,9 +21,21 @@
 
 ### PRG file
 
-- [](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/others/SIDE%20PACMAN.PRG)
+[](https://github.com/jumpjack/ChoplifterReverseWithAI/blob/main/others/SIDE%20PACMAN.PRG)
 
-It gets loaded from $0801 (BASIC area) to $68f9
+- File is 24826 ($60FA) bytes long (offsets $0000-$60f9);
+- Bytes at offsets $0000, $0001 are not stored but used to determine start load address ($0801);
+- Remaining bytes (offsets $0002-$60f9 = 24824 bytes) get loaded from $0801 to  $68f8 (=26872 = $0801 + 24824-1), i.e. stored starting from BASIC area; indeed the initial loader is BASIC line "sys 2087";
+- After loading the basic program from disk, it is automatically started and it jumps to assembly loader $0827 (sys 2087);
+- Assembly loader moves block $0838-$0937 to area $0100-$01ff , beacuse programs in page zero run faster, and then it jumps to $0100 to execute the loader;
+- Program starting from $0100 moves block $08be-$68f8 to area $9FC5-$ffff;
+- After moving data to the end of RAM space, program reads back such data, this time applying RLE decompressing algorithm while writing from $0801 on; this results in a new BASIC program being stored from $0801 to $080c with a "SYS 2061" statement, and a new assembly program starting at $080d (decimal 2061), which is the actual game, which begins setting to black screen and border:
+
+```
+ $080d lda #$00            ; 
+       sta d020            ; Black border (poke 53280,0)
+       sta d021            ; Black background (poke 3281,0)
+ ```
 
 ### Basic loader
 
@@ -34,8 +46,8 @@ dec 2087 is $0827
 ### Hacking:
 Right after loading, programs gets launched, but if in the emulator, before loading, you put these breakpoints, you can monitor separately the loading/decompression cycles:
 
-- $0827 Start of the assenbly programs, which moves loader to $0100 for faster execution
-- $0135 End of first cycle (copy)
+- $0827 Start of the assembly programs, which moves loader to $0100 for faster execution
+- $0135 End of first cycle (copy $08be-$68f8 to  $9fc5-$ffff)
 - $0170 End of second cycle (decompression), main program is launched.
 
 
@@ -64,7 +76,7 @@ Moves loader to $0100 for faster execution.
 0835: 4C 00 01  JMP $0100   ; Salta all'indirizzo $0100
 ```
 
-Loader copies next 256 bytes (0x0838-0x0937) to 0x0100-0x01ff then jumps to 0x0100, which will contain this (relocated) code; here below is reported this code, in its original position and relocated:
+Loader copies block 0x0838-0x0937 (256 bytes) to 0x0100-0x01ff then jumps to 0x0100, which will contain the (relocated) code; here below is reported this code, in its original position and relocated:
 
 ```
 Originale                             |   Rilocato a $0100
@@ -138,7 +150,7 @@ Originale                             |   Rilocato a $0100
 08BD   60         L08BD     RTS			|0185   60         L0185     RTS
 
 
-; --------------- BASIC block (sys 2061, i.e. JMP 0x080D) ------------
+; --------------- BASIC block ("SYS 2061", i.e. JMP 0x080D) ------------
 08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03  ; Note: "$BF 03" is turned into "00 00 00" by the RLE decompressor,
                                         ; which also move result to $0801 (BASIC start).
 ; --------------------------------------------------------------------------
@@ -195,7 +207,7 @@ Following code will start from $080d after decompression:
 
 ### Relocated code commented (in Italian) with the help of AI
 
-- In un primo momento il codice copia il contenuto tra  $08be e $68f8 (24634 byte) e lo incolla a partire da $9fc5 fino a $ffff, procedendo al contrario.
+- In un primo momento il codice copia il blocco $08be-$68f8 (24634 byte) e lo incolla a partire da $9fc5 fino a $ffff, procedendo al contrario.
 - in una seconda fase il loader copia da dove è arrivato il contatore ($9fc5) e incolla a partire da $0801, ma anzichè fare una copia diretta effettua una decompressione RLE:
 
 #### Valore $BF
@@ -226,6 +238,8 @@ Codice commentato:
 L0100   sei                 ; Disabilita interrupts
         lda #$34
         sta $01             ; Configura la memoria: I/O visibile, no BASIC, no KERNAL
+
+
         ldy #$00            ; Inizializza Y a 0 (usato come offset)
         lda #$f9
         sta $ae
@@ -239,24 +253,26 @@ L0100   sei                 ; Disabilita interrupts
 
 L0115   lda $ac
         bne L011b
-        dec $ad             ; Decrementa byte alto destinazione se necessario
-L011b   dec $ac             ; Decrementa indirizzo destinazione
+        dec $ad             ; Decrementa byte alto destinazione.
+L011b   dec $ac             ; Decrementa byte basso destinazione.
+                            ; Alla prima esecuzione quindi la destinazione parte da $FFFF.    
         lda $ae
         bne L0123
-        dec $af             ; Decrementa byte alto sorgente se necessario
-L0123   dec $ae             ; Decrementa indirizzo sorgente
-        lda ($ae),y         ; Carica byte da sorgente
-        sta ($ac),y         ; Memorizza byte a destinazione
+        dec $af             ; Decrementa byte alto sorgente.
+L0123   dec $ae             ; Decrementa indirizzo sorgente.
+                            ; Alla prima esecuzione quindi parte da $68f9-$0001, quindi $68f8.   
+        lda ($ae),y         ; Carica byte da sorgente.
+        sta ($ac),y         ; Memorizza byte in destinazione.
         lda $ae
-        cmp #$be
+        cmp #$be            ; Continua finché indirizzo sorgente = $08be; contatore Y inutilizzato.
         bne L0115
         lda $af
         cmp #$08
-        bne L0115           ; Continua finché sorgente = $08be; contatore Y inutilizzato.
+        bne L0115           
 
 
 ; -------------
-; Gruppo 3: Seconda copia (e altro?): scrive in area BASIC programma presente inzialmente
+; Gruppo 3: Seconda copia (e altro?): scrive in area BASIC programma presente inizialmente
 ; da $08be (ora in $9fc5)
 ; -------------
         lda #$01            ;  $ae,$af diventa la destinazione e viene impostato a $0801.
@@ -285,11 +301,8 @@ L014b   sta ($ae),y         ; Scrive in $ae,$af + Y: scrive uno zero se il fluss
         dex                 ; X--  ;  decrementa  contatore
         bne L014b           ; Ripete per il numero di volte in contatore
 
-        beq L016b           ; Condizione sempre vera, quindi equivalente a JMP,  ma più corta:
-                            ; quando ha finito di copiare, prosegue saltando la subroutine L0155 qui sotto
-                            ; *** Si può mettere un BRK qui ($0153, inizialmente $088b, dec 2187) per controllare
-                            ; il risultato del primo ciclo di copia. Valore originale: $F0, dec 240 ***
-
+        beq L016b           ; Quando il contatore arriva a zero, prosegue saltando la subroutine L0155 qui sotto
+                            ; e andando direttamente a $016b che incrementa il punatore-sorgente
 
 
 ; ---- subroutines ---
@@ -317,8 +330,8 @@ L016b   jsr L0178           ; Incrementa $ac,$ad
 
 
 
-        lda #$37            ; *** Si può mettere un BRK qui ($0170, inizialmente $08a8, dec 2216) per esaminare 
-                            ; il risultato del secondo ciclo di copia; valore iniziale: $a9, dec169 *** 
+        lda #$37            ; *** Si può mettere un BRK qui ($0170) per esaminare 
+                            ; il risultato del secondo ciclo di copia. *** 
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
         jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma
@@ -356,18 +369,17 @@ L017f   inc $ae             ; Incrementa byte basso
         inc $af             ; Incrementa byte alto se necessario
 L0185   rts
 
-; Gruppo 5: Dati (programma BASIC (era in $08be al caricamento del .prg))
+; Gruppo 5: Dati (programma BASIC (era in $08be al caricamento del .prg, alla fine si trova in $0801))
 L0186   .byte $0b, $08      ; Puntatore alla prossima linea BASIC
         .byte $0a, $00      ; Numero di linea (10)
         .byte $9e           ; Token SYS
         .ascii "2061"       ; Indirizzo per SYS
-        .byte $bf           ; marker di fine programma usato dalla routine basic, ma anche
-                            ; token valido (PEEK)
-        .byte $03           ; Fine linea BASIC
+        .byte $bf           ; marker per decompressione RLE: decodifica in un numero di zeri pari al prossimo numero (3)
+        .byte $03           ; "00 00 00": fine programma BASIC.
 
 
 ; Gruppo 6: Inizializzazione hardware e configurazione sistema
-L0191   lda #$00            ; (era in $08c9)
+L0191   lda #$00            ; (era in $08c9, alla fine si trova in $080d, dec2061)
         sta d020_vBorderCol ; Imposta colore bordo a nero
         sta d021_vBackgCol0 ; Imposta colore sfondo a nero
         jsr e8DD0           ; Chiama subroutine (non visibile qui)
