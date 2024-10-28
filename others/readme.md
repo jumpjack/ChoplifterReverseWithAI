@@ -32,13 +32,11 @@ It gets loaded from $0801 (BASIC area) to $68f9
 dec 2087 is $0827
 
 ### Hacking:
+Right after loading, programs gets launched, but if in the emulator, before loading, you put these breakpoints, you can monitor separately the loading/decompression cycles:
 
-Subito dopo il caricamento parte il programma, ma se si ferma e si memorizza 0 in $088b e $08a8 e si fa continuare l'esecuzione, il programma si fermerà dopo il primo ciclo di copia; scrivendo poi 0xF0 in $088b e saltando proprio a  $088b  si esegue il secondo ciclo ma non si avvia il gioco. Per avviare il gioco, mettere 0xA9 in $08a8 e saltare a $08a8.
-
-Oppure mettere breakpoint in:
-- $0827 punto di accesso del sys del BASIC: copiatura loader in $0100
-- $0135 fine primo ciclo
-- $0170 fine secondo ciclo, dopo parte il gioco
+- $0827 Start of the assenbly programs, which moves loader to $0100 for faster execution
+- $0135 End of first cycle (copy)
+- $0170 End of second cycle (decompression), main program is launched.
 
 
 
@@ -46,12 +44,15 @@ Oppure mettere breakpoint in:
 ### Loaded PRG:
 
 #### BASIC part
-
+```
 0801   25 08 9C 08 9E 32 30 38 37 20 53 48 4F 52 54 20 ; "SYS 2087" followed by comments
 0811   56 45 52 53 49 4F 4E 20 42 59 20 4D 52 2E 5A 20
 0821   20 20 20 00 00 00 
+```
 
-#### Assembly part (from $0x0807 = 2087)
+
+#### Assembly part (from $0x0827 = 2087)
+Moves loader to $0100 for faster execution.
 ```
 0827: A2 00     LDX #$00    ; Carica il valore 0 nel registro X
 0829: BD 38 08  LDA $0838,X ; Carica un byte dalla memoria all'indirizzo $0838+X in A
@@ -137,11 +138,12 @@ Originale                             |   Rilocato a $0100
 08BD   60         L08BD     RTS			|0185   60         L0185     RTS
 
 
-; --------------- blocco di righe basic (sys 2061, cioè 0x080D) ------------
-08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03  ; Nota: "$BF 03" verrà convertito in "00 00 00" dal decompressore, quando
-                                        ; il programma verrà trasferito in $0801.
+; --------------- BASIC block (sys 2061, i.e. JMP 0x080D) ------------
+08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03  ; Note: "$BF 03" is turned into "00 00 00" by the RLE decompressor,
+                                        ; which also move result to $0801 (BASIC start).
 ; --------------------------------------------------------------------------
 
+Following code will start from $080d after decompression:
 
 08C9   A9 00                LDA #$00		|0191   A9 00                LDA #$00
 08CB   8D 20 D0             STA $D020		|0193   8D 20 D0             STA $D020
@@ -191,24 +193,33 @@ Originale                             |   Rilocato a $0100
 
 ```
 
-Codice rilocato, commentato dall'intelligenza artificiale.
+### Relocated code commented (in Italian) with the help of AI
 
-In un primo momento il codice copia il contenuto tra  $08be e $68f8 (24634 byte) e lo incolla a partire da $9fc5 fino a $ffff, procedendo al contrario.
+- In un primo momento il codice copia il contenuto tra  $08be e $68f8 (24634 byte) e lo incolla a partire da $9fc5 fino a $ffff, procedendo al contrario.
+- in una seconda fase il loader copia da dove è arrivato il contatore ($9fc5) e incolla a partire da $0801, ma anzichè fare una copia diretta effettua una decompressione RLE:
 
-In una seconda fase copia da dove è arrivato il contatore ($9fc5) e incolla a partire da $0801, non un numero di byte predefinito, ma finchè non trova il carattere $bf. Questo significa che prende questa serie di byte (messa lì nel loop precedente)...
+#### Valore $BF
+Ogni volta che trova un valore $BF seguito da un altro valore, nella destinazione scrive un numero di zeri pari al valore letto. Quindi la sequenza:
 
-08BE: 0B 08 0A 00 9E 32 30 36 31 BF 03
+ 08BE: 0B 08 0A 00 9E 32 30 36 31 **BF** **_03_** A9 00
 
-...e la memorizza a partire da $0801; in pratica, carica un nuovo programma basic che consiste in "sys 2061", cioè un salto alla locazione $080D; al momento della decompressione/spostamento, però, "$BF" verrà sostituito con "00 00 00":
+verrà decompressa in:
 
-      01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
-0801: 0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00
+ 08BE: 0B 08 0A 00 9E 32 30 36 31 **_00 00 00_** A9 00
 
-Diventa:
-0801: 0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00
-
+e poi trasferita in $0801:
+```
+       01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
+ 0801: 0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00
+```
 Il "00 00 00" è il marker di fine basic, mentra "A9 00", che si traduce in "LDA #$00", si troverà in 080D, che è proprio l'indirizzo di salto del SYS, nonchè l'indirizzo di salto alla fine del loader.
 
+#### Valore $CF
+Ogni volta che invece trova un valore $CF, legge un secondo valore che sarà il numero di ripetizioni, e un terzo valore che sarà il valore da ripetere.
+
+-----------
+
+Codice commentato:
 
 ```
 ; Gruppo 1: Inizializzazione e setup dei puntatori
@@ -290,7 +301,7 @@ L0155   cmp #$cf
         lda ($ac),y         ; Legge primo byte e
         tax                 ; lo memorizza come contatore.
         jsr L0178           ; Incrementa destinazione
-        lda ($ac),y         ; Legge secondo byte (possibile valore da copiare)
+        lda ($ac),y         ; Legge secondo byte (valore da copiare)
         bne L014b           ; Se non zero, torna a scrivere
 
 L0166   sta ($ae),y         ; Scrive in $ae,$af
@@ -310,22 +321,28 @@ L016b   jsr L0178           ; Incrementa $ac,$ad
                             ; il risultato del secondo ciclo di copia; valore iniziale: $a9, dec169 *** 
         sta $01             ; Ripristina configurazione memoria normale
         cli                 ; Riabilita interrupts
-        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma BASIC, che inizialmente partiva da $08BE, ma chè stato rilocato e decompresso in $0801; dall'originale:
+        jmp L080D           ; Salta a L080D  (2061, la stessa posizione del SYS del nuovo programma
+                            ; BASIC, che inizialmente partiva da $08BE, ma chè stato rilocato e
+                            ; decompresso in $0801; dall'originale:
 
-     BE BF C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA
-8BE: **0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00**
+      BE BF C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA
+ 8BE: 0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00
 
-diventerebbe:
-
-      01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
-0801: **0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00**
-
-Ma in realtà la decompressione trasforma $BF in "00 00 00", quindi:
+                            ; diventerebbe:
 
       01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
-0801: **0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00**
+ 0801: 0B 08 0A 00 9E 32 30 36 31 BF 03 A9 00
 
-Il "00 00 00" è il marker di fine basic, mentra "A9 00", che si traduce in "LDA #$00", si troverà in 080D, che è proprio l'indirizzo di salto del SYS, nonchè l'indirizzo di salto alla fine del loader.
+
+                            ; Ma in realtà la decompressione trasforma $BF in "00 00 00", quindi:
+
+ 
+      01 02 03 04 05 06 07 08 09 04 0b 0c 0d 0e
+ 0801: 0B 08 0A 00 9E 32 30 36 31 00 00 00 A9 00
+
+
+ Il "00 00 00" è il marker di fine basic, mentra "A9 00", che si traduce in "LDA #$00", si troverà in 080D, che è proprio 
+ l'indirizzo di salto del SYS, nonchè l'indirizzo di salto alla fine del loader.
 
 
 ; ---------- Gruppo 4: Subroutine di incremento puntatori ---------
